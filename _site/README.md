@@ -1,2 +1,3 @@
 # Stat480-at-ISU.github.io
-webfront of Stat 480
+
+Webfront for Stat 480 (Spring 2020)
