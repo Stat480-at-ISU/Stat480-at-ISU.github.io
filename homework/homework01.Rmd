@@ -4,6 +4,12 @@ author: "Your Name"
 date: "1/19/2018"
 output: html_document
 ---
+---
+title: 'Stat 480 - Homework #1'
+author: "Your Name"
+date: "1/19/2018"
+output: html_document
+---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
