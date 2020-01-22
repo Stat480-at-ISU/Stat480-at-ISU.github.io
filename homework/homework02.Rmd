@@ -1,0 +1,34 @@
+---
+title: 'Stat 480 - Homework #2'
+author: "Your Name"
+date: "1/30/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Economic Guide to Picking a College Major
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
+
+2. Using the command below, read in the data set into your R session. 
+
+```{r}
+recent_grads <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/materials-2020/master/02-r_intro/data/recent_grads.csv")
+```
+
+3. Create a new variable, `share_women`, that is women as share of total; i.e. the number of women divided by the total number of men and women.
+
+4. Create a subset of the data containing only the rows where the `major_category` is `STEM`.
+
+5. For your subset, compute the average  of `share_women` and its standard deviation. Also compute the average median earnings (`median`) and its standard deviation. Comment on the results. (You might have to deal with missing values appropriately).
+
+5. Compute the correlation between women as a share of total (`share_women`) and the median earnings (`median`) and interpret your results.
+
+6. Use the original dataset and `ggplot2` to draw a scatterplot of share of total and the median earnings. Color points by the major category (`major_category`). Comment on the result. 
+
+Due date: the homework is due before class on Thursday. 
+
+For the submission: submit your solution in an R Markdown file and (just for insurance) submit the corresponding html file with it. 
