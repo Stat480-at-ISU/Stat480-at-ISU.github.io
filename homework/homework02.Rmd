@@ -4,12 +4,7 @@ author: "Your Name"
 date: "1/30/2020"
 output: html_document
 ---
----
-title: 'Stat 480 - Homework #2'
-author: "Your Name"
-date: "1/30/2020"
-output: html_document
----
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -33,7 +28,7 @@ recent_grads <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/mater
 
 5. Compute the correlation between women as a share of total (`share_women`) and the median earnings (`median`) and interpret your results.
 
-6. Use the original dataset and `ggplot2` to draw a scatterplot of share of total and the median earnings. Color points by the major category (`major_category`). Comment on the result. 
+6. Use the original dataset and `ggplot2` to draw a scatterplot of women as share of total and the median earnings. Color points by the major category (`major_category`). Comment on the result. 
 
 Due date: the homework is due before class on Thursday. 
 
