@@ -23,7 +23,7 @@ recent_grads <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/mater
 
 4. Create a subset of the data containing only the rows where the `major_category` is `STEM`.
 
-5. For your subset, compute the average  of `share_women` and its standard deviation. Also compute the average median earnings (`median`) and its standard deviation. Comment on the results. (You might have to deal with missing values appropriately).
+5. For your subset, compute the average  of `share_women` and its standard deviation. Also compute the average mean earnings (`median`) and its standard deviation. Comment on the results. (You might have to deal with missing values appropriately).
 
 5. Compute the correlation between women as a share of total (`share_women`) and the median earnings (`median`) and interpret your results.
 

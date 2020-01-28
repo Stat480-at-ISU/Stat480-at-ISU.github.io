@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 
 <meta name="author" content="Your Name" />
@@ -269,7 +269,6 @@ code {
 }
 img {
   max-width:100%;
-  height: auto;
 }
 .tabbed-pane {
   padding-top: 12px;
@@ -331,6 +330,7 @@ summary {
   border: none;
   display: inline-block;
   border-radius: 4px;
+  background-color: transparent;
 }
 
 .tabset-dropdown > .nav-tabs.nav-tabs-open > li {
@@ -342,18 +342,6 @@ summary {
   display: none;
 }
 </style>
-
-<script>
-$(document).ready(function () {
-  window.buildTabsets("TOC");
-});
-
-$(document).ready(function () {
-  $('.tabset-dropdown > .nav-tabs > li').click(function () {
-    $(this).parent().toggleClass('nav-tabs-open')
-  });
-});
-</script>
 
 <!-- code folding -->
 
@@ -391,7 +379,7 @@ $(document).ready(function () {
 <ol start="3" style="list-style-type: decimal">
 <li><p>Create a new variable, <code>share_women</code>, that is women as share of total; i.e. the number of women divided by the total number of men and women.</p></li>
 <li><p>Create a subset of the data containing only the rows where the <code>major_category</code> is <code>STEM</code>.</p></li>
-<li><p>For your subset, compute the average of <code>share_women</code> and its standard deviation. Also compute the average median earnings (<code>median</code>) and its standard deviation. Comment on the results. (You might have to deal with missing values appropriately).</p></li>
+<li><p>For your subset, compute the average of <code>share_women</code> and its standard deviation. Also compute the average mean earnings (<code>median</code>) and its standard deviation. Comment on the results. (You might have to deal with missing values appropriately).</p></li>
 <li><p>Compute the correlation between women as a share of total (<code>share_women</code>) and the median earnings (<code>median</code>) and interpret your results.</p></li>
 <li><p>Use the original dataset and <code>ggplot2</code> to draw a scatterplot of women as share of total and the median earnings. Color points by the major category (<code>major_category</code>). Comment on the result.</p></li>
 </ol>
@@ -416,6 +404,23 @@ $(document).ready(function () {
 
 
 </script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
 <script>
