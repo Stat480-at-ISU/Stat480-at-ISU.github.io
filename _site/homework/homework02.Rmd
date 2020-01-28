@@ -25,7 +25,7 @@ recent_grads <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/mater
 
 5. For your subset, compute the average  of `share_women` and its standard deviation. Also compute the mean median earnings (`Median`) and its standard deviation. Comment on the results. (You might have to deal with missing values appropriately).
 
-5. Compute the correlation between women as a share of total (`share_women`) and the median earnings (`median`) and interpret your results.
+5. Again using the subset, compute the correlation between women as a share of total (`share_women`) and the median earnings (`median`) and interpret your results.
 
 6. Use the original dataset and `ggplot2` to draw a scatterplot of women as share of total and the median earnings. Color points by the major category (`major_category`). Comment on the result. 
 
