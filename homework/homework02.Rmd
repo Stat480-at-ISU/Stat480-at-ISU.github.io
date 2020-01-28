@@ -15,6 +15,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+
 ## Economic Guide to Picking a College Major
 
 1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
@@ -27,14 +28,16 @@ recent_grads <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/mater
 
 3. Create a new variable, `share_women`,  in the dataset that is women as share of total; i.e. the number of women divided by the total number of men and women.
 
-4. Create a subset of the data containing only the rows where the `major_category` is `STEM`.
+4. Create a subset of the data containing only the rows where the `Major_category` is `STEM`.
 
 5. For your subset, compute the average  of `share_women` and its standard deviation. Also compute the mean median earnings (`Median`) and its standard deviation. Comment on the results. (You might have to deal with missing values appropriately).
 
-5. Again using the subset, compute the correlation between women as a share of total (`share_women`) and the median earnings (`median`) and interpret your results.
+5. Again using the subset, compute the correlation between women as a share of total (`share_women`) and the median earnings (`Median`) and interpret your results.
 
-6. Use the original dataset and `ggplot2` to draw a scatterplot of women as share of total and the median earnings. Color points by the major category (`major_category`). Comment on the result. 
+6. Use the original dataset and `ggplot2` to draw a scatterplot of women as share of total and the median earnings. Color points by the major category (`Major_category`). Comment on the result. 
 
-Due date: the homework is due before class on Thursday. 
 
-For the submission: submit your solution in an R Markdown file and (just for insurance) submit the corresponding html file with it. 
+
+**Due date**: the homework is due before class on Thursday. 
+
+**For the submission**: submit your solution in an R Markdown file and (just for insurance) submit the corresponding html file with it. 
