@@ -23,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 2. Using the command below, read in the data set into your R session. 
 
 ```{r}
-recent_grads <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/materials-2020/master/02-r_intro/data/recent_grads.csv")
+recent_grads <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/materials-2020/master/02_r-intro/data/recent_grads.csv")
 ```
 
 3. Create a new variable, `share_women`,  in the dataset that is women as share of total; i.e. the number of women divided by the total number of men and women.
