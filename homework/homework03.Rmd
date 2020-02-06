@@ -12,10 +12,20 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 ```
 
-## Spotify data
+<br/>
+
+#### Submission Details
+
+**Due date**: the homework is due before class on Thursday. 
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+#### Spotify data
 
 1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.  
 
@@ -27,11 +37,27 @@ spotify <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at
 
 3. Use one of our object inspecting functions and interpret the result in the data that you see.
 
+```{r}
+
+```
+
 4. Use the package `ggplot2` to draw a barchart of the genres. In addition, map the genre categories to the fill color of the barchart.
+
+```{r}
+
+```
 
 5. Use the package `ggplot2` to draw a histogram of one of the continuous variables in the dataset. Use fill color to show the genre categories and adjust the binwidth if necessary. Use `facet_wrap()` to create a histogram for each of the genre categories.
 
+```{r}
+
+```
+
 6. Use the package `ggplot2` to draw a boxplot to compare one of the continuous variables with the genre categories. Again, use fill color to show the genre categories.
+
+```{r}
+
+```
 
 7. For each of the three figures above, write a two-three sentence summary, describing the
     a. **structure of the plot**: what type of plot is it? Which variables are mapped to x, to y, and to the (fill) color?
@@ -39,6 +65,3 @@ spotify <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at
     c. **additional message**: point out anomalies or outliers, if there are any. 
 
 
-Due date: the homework is due before class on Thursday. 
-
-For the submission: submit your solution in an R Markdown file and (just for insurance) submit the corresponding html file with it. 
