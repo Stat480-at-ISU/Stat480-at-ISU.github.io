@@ -385,10 +385,10 @@ summary {
 <pre class="r"><code>bikes &lt;- read.csv(&quot;https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/homework/data/bikes.csv&quot;)</code></pre>
 <ol start="3" style="list-style-type: decimal">
 <li><p>Recode the variable <code>holiday</code> to be logical variables with <code>0</code> as <code>FALSE</code> and <code>1</code> as <code>TRUE</code>.</p></li>
-<li><p>Create a variable <code>workingday</code> in that is <code>TRUE</code> if it is not the weekend (use <code>weekday</code> where 1 = sunday, etc.) or a holiday. Use ggplot to create a bar chart comparing the number of bike rentals (<code>count</code>) for a working day vs. a non-working day. Interpret the result.</p></li>
+<li><p>Create a variable <code>workingday</code> in that is <code>FALSE</code> if it is a holiday or the weekend (use <code>weekday</code> where 1 = Sunday, 2 = Monday, etc.). You may find De Morgan’s laws helpful here. Use ggplot to create a scatterplot comparing the number of registered bike rentals with the number of casual bike rentals. Map <code>workingday</code> to color. Interpret the result.</p></li>
 <li><p>Recode the <code>year</code> variable so that the value 0 becomes 2011 and the value 1 becomes 2012.</p></li>
-<li><p>For each observation, verify that the variable <code>count</code> is equal to <code>casual</code> plus <code>registered</code>.</p></li>
-<li><p>How does the number of rentals compare across the months? Use ggplot2 to draw side-by-side boxplots of <code>count</code> by <code>month</code>. Interpret the result.</p></li>
+<li><p>For each observation, verify that the variable <code>count</code> is equal to <code>casual</code> plus <code>registered</code>. You should be able to verify this without having to print out the columns. (Hint: one option is to use the function <code>any()</code>)</p></li>
+<li><p>How does the number of casual riders renting bikes compare across the months? Use ggplot2 to draw side-by-side boxplots of <code>casual</code> by <code>month</code>. Interpret the result.</p></li>
 <li><p>How does the number of rentals compare for different weather conditions? Recode the variable <code>weather</code> to be a factor with 1 - clear, 2 - mist, 3 - light_precip. Use ggplot2 to draw side-by-side boxplots of <code>count</code> by <code>weather</code> colored by <code>weather</code>. Interpret the result.</p></li>
 </ol>
 </div>
