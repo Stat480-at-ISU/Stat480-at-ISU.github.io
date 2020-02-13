@@ -23,9 +23,10 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 
 1. Download the RMarkdown file with these homework instructions to use as a template for your work.
 Make sure to replace "Your Name" in the YAML with your name.
-2. FiveThirtyEight is a website founded by Statistician and writer Nate Silver to publish results from  opinion poll analysis, politics, economics, and sports blogging. 
-One of the featured articles considers [flying etiquette](https://fivethirtyeight.com/features/airplane-etiquette-recline-seat/). 
-This article is based on data collected by FiveThirtyEight and publicly available on github. Use the code below to read in the data from the survey:
+
+
+2. FiveThirtyEight is a website founded by Statistician and writer Nate Silver to publish results from  opinion poll analysis, politics, economics, and sports blogging. One of the featured articles considers [flying etiquette](https://fivethirtyeight.com/features/airplane-etiquette-recline-seat/). This article is based on data collected by FiveThirtyEight and publicly available on github. Use the code below to read in the data from the survey:
+
 ```{r}
 fly <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/flying-etiquette-survey/flying-etiquette.csv")
 ```
@@ -37,6 +38,7 @@ fly$Age <- factor(fly$Age, levels=c("18-29", "30-44", "45-60", "> 60", ""))
 fly$Household.Income <- factor(fly$Household.Income, levels = c("$0 - $24,999","$25,000 - $49,999", "$50,000 - $99,999", "$100,000 - $149,999", "150000", ""))
 fly$Education <- factor(fly$Education, levels = c("Less than high school degree", "High school degree", "Some college or Associate degree", "Bachelor degree",  "Graduate degree", ""))
 ```
+
 
 3. Some people do not travel often by plane. Provide a breakdown of travel frequency (use variable `How.often.do.you.travel.by.plane.`). Reorder the levels in the variable by travel frequency from least frequent travel to most frequent. Draw a barchart of travel frequency and comment on it. 
 
@@ -76,4 +78,6 @@ ggplot(data = fly, aes(x = 1)) +
 
 
 7. Investigate the relationship between gender and the variables `Do.you.have.any.children.under.18.` and `baby.on.plane`. How is the attitude towards babies on planes shaped by gender and having children under 18? Find a plot that summarises your findings (use `ggplot2`).
+
+
 
