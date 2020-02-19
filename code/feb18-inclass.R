@@ -3,6 +3,7 @@
 # notes on homework:
 
 # Q4: NA vs. "NA"
+levels(fly$Education)
 levels(fly$Education)[6] <- NA
 levels(fly$Education)
 
@@ -16,8 +17,8 @@ names(fly)[19] <- ""
 
 
 
-
-# slides: dplyr ---------------------
+# ---------------------
+# slides: dplyr 
 
 fbi %>% 
   arrange(desc(State), Year) %>% 
@@ -53,22 +54,3 @@ french_fries %>%
   geom_line(aes(x = time, y = m_rancid, 
                 color = treatment, group = treatment))
 
-
-# YOUR TURN -----------------
-
-# How much consistency do we see between ratings? 
-# For buttery and rancid ratings find the mean and the absolute difference 
-# between the two replicates (for each subject, each treatment and each time point). Use dplyr functions to find this summary dataset.
-
-
-# Are ratings more different between the two scales? 
-# What would you need to draw a side-by-side boxplot of the two ratings? 
-# Describe in words.
-
-
-# Are some subjects in the study more consistent than others? 
-# Show the variability in the potato-y ratings by subjects. 
-# Order subjects from least variability to most.
-
-
-  
