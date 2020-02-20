@@ -1,0 +1,90 @@
+---
+title: 'Stat 480 - Homework #4'
+date: "2/13/2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+library(tidyverse)
+```
+
+
+<br/>
+
+#### Submission Details
+
+**Due date**: the homework is due before class on Thursday. 
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+#### Bike rentals in DC
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
+
+2. The data include daily bike rental counts (by members and casual users) of Capital Bikeshare in Washington, DC in 2011 and 2012 as well as weather information on these days. The original data sources are http://capitalbikeshare.com/system-data and http://www.freemeteo.com. Using the command below, read in the spotify data set into your R session. 
+
+```{r}
+bikes <- read.csv("https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/homework/data/bikes.csv")
+```
+
+3. Recode the variable `holiday` to be logical variables with `0` as `FALSE` and `1` as `TRUE`.
+
+```{r}
+bikes$holiday <- as.logical(bikes$holiday)
+```
+
+4. Create a variable `workingday` in that is `FALSE` if it is a holiday or the weekend (use `weekday` where 1 = Sunday, 2 = Monday, etc.). You may find De Morgan's laws helpful here. Use ggplot to create a scatterplot comparing the number of registered bike rentals with the number of casual bike rentals. Map `workingday` to color. Interpret the result.
+
+```{r}
+bikes$workingday <- !(bikes$holiday) & !(bikes$weekday %in% c(1,7)) 
+
+ggplot(bikes, aes(x = casual, y = registered, color = workingday)) + 
+  geom_point()
+```
+
+From this scatterplot we can see that there, in general, appears to be a larger number of registered riders renting bikes than casual riders. This is especially true on work days.
+
+
+5. Recode the `year` variable so that the value 0 becomes 2011 and the value 1 becomes 2012.
+
+```{r}
+bikes$year[bikes$year == 0] <- 2011
+bikes$year[bikes$year == 1] <- 2012
+```
+
+
+6. For each observation, verify that the variable `count` is equal to `casual` plus `registered`. You should be able to verify this without having to print out the columns. (Hint: one option is to use the function `any()`)
+
+```{r}
+any((bikes$casual + bikes$registered) != bikes$count) 
+```
+
+
+
+7. How does the number of casual riders renting bikes compare across the months? Use ggplot2 to draw side-by-side boxplots of `casual` by `month`. Interpret the result.
+
+```{r}
+ggplot(bikes, aes(x = factor(month), y = casual)) + 
+  geom_boxplot()
+```
+
+The median number of of casual rentals is larger is the summer months (months ~5-9) than in the winter months. Additionally, from the boxplots, we can see that the distributions of number of casual rentals tend to be skewed with some larger outliers. 
+
+
+
+8. How does the number of rentals compare for different weather conditions? Recode the variable `weather` to be a factor with 1 - clear, 2 - mist, 3 - light_precip. Use ggplot2 to draw side-by-side boxplots of `count` by `weather` colored by `weather`. Interpret the result.
+
+```{r}
+bikes$weather <- factor(bikes$weather)
+levels(bikes$weather) <- c("clear", "mist", "light-precip")
+
+ggplot(bikes, aes(x = weather, count, fill = weather)) + 
+  geom_boxplot()
+```
+
+The median number of of bike rentals is larger is when the weather is clear of misting, and smaller when there is light precipitation. Additionally, from the boxplots, we can see that the range of bike rentals when the weather is nicer is much larger than the range of bike rentals when there is light precipitation.
+
+
