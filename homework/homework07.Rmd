@@ -1,0 +1,105 @@
+---
+title: 'Stat 480 - Homework #7'
+author: "Your Name"
+date: "3/5/2020"
+output: html_document
+---
+---
+title: 'Stat 480 - Homework #7'
+author: "Your Name"
+date: "3/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+<br/>
+
+#### Submission Details
+
+**Due date**: the homework is due before class on Thursday. 
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+#### Measles Vaccination Rates
+
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.  
+
+
+2. The data this week comes from [The Wallstreet Journal](https://github.com/WSJ/measles-data). The dataset includes immunization rate data for schools across the U.S. The accompanying article is published [here](https://www.wsj.com/graphics/school-measles-rate-map/).   
+
+```{r }
+library(dplyr)
+library(ggplot2)
+library(readr)
+measles <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
+```
+
+3. For how many schools do we have data? How many of these schools recorded their Measles, Mumps, and Rubella (MMR) vaccination rate? Use the variable `mmr` to answer this question. Only consider schools with a rate > 0 for the remainder of the homework.  
+
+```{r}
+## your answer here
+```
+
+  
+4. Using `mutate()`, reorder the levels of the variable `state` according to the median MMR vacination rate. Then "pipe" your results into ggplot and create boxplots of MMR vacination rates for each state. Map the variable `state` to `color`, include the parameter `show.legend = FALSE` within `geom_boxplot()`, and flip the coordinates. Interpret.  
+
+```{r}
+## your answer here
+```
+
+  
+5. According to the CDC, 95% of a population needs to be vaccinated to stop the spread of measles and preserve herd immunity. Using `mutate()` and `case_when()`, introduce a new variable into the dataset `mmr_threshold` where the value is "above" when `mmr` is greater than 95 and "below" otherwise. Is there a relationship between the type of school and the proportion of schools that did not reach that threshold? For each type of school, calculate the mean MMR vaccination rate. On how many responses are the averages based? Show these numbers together with the averages. Additionally, calculate the percentage of schools that did not reach that threshold. Arrange your results from greatest percentage to lowest. Comment on your results.  
+
+```{r}
+## your answer here
+```
+
+
+
+6. Use `dplyr` functions to:
+
+  - only include observations with enrollment greater than 0 and exclude the school "West Valley School Prek-6" (there is an issue with that observation)  
+  - filter for rows that have a unique combination of the variables `year`, `city`, `state`, name, `type`, `enroll`, and `mmr` (there are duplicates in the data)
+  - Inside `mutate()` use `weighted.mean()` to calculate the mean MMR vacination rates weighted by the enrollment. Name this new variable `state_avg`.  
+  - For each city and state combination, calculate the mean MMR vacination rate weighted by enrollment, the total number of students enrolled, and the mean of the state average calculated in the previous step.  
+  - only consider rows where the total enrollment is more than 250 and less than 100,000.
+  
+```{r}
+## your answer here
+```  
+  
+  
+7. Now use the previous data set to draw a scatterplot with the mean MMR rate for each city on the y-axis and the student enrollment on the x-axis and color by the state mean MMR rate. Use the code below as your starting point and add in the necessary aesthetic mappings within `ggplot(aes( ))`. Describe and summarise the chart.
+
+```
+question6_data %>%
+  ggplot(aes( )) + 
+  geom_hline(yintercept = 95, linetype = "dashed", size = 0.25, color = "grey40") +
+  geom_point(size = 2, alpha = .3) +
+  scale_color_gradient(low = "red", high = "blue", limits=c(88, 96), oob = scales::squish, 
+  guide = guide_colorbar(direction = "horizontal", title.position = "top", 
+                        title = "State average immunization rate", barwidth = 15, barheight = 0.25, 
+                        ticks = FALSE, title.hjust = 0.5)) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  ggtitle("MMR immunization rates at schools grouped across US cities") +
+  labs(subtitle="According to data collected by The Wall Street Journal",
+       x = "Student Enrollment", y = "") +
+  scale_x_continuous(labels = scales::comma) 
+```
+  
+  
+```{r}
+## your answer here
+```
+
+
+
+
+
