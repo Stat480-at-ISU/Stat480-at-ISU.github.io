@@ -1,18 +1,11 @@
 ---
 title: 'Stat 480 - Homework #5'
-date: "2/13/2018"
-output: html_document
----
----
-title: 'Stat 480 - Homework #5'
-author: "Your Name"
-date: "2/13/2018"
+date: "2/20/2020"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, message = FALSE)
-library(ggplot2)
 ```
 
 <br/>
@@ -27,9 +20,11 @@ library(ggplot2)
 
 ## Flying etiquette
 
-1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
+1. Download the RMarkdown file with these homework instructions to use as a template for your work.
+Make sure to replace "Your Name" in the YAML with your name.
 
-2. FiveThirtyEight is a website founded by Statistician and writer Nate Silver to publish results from  opinion poll analysis, politics, economics, and sports blogging. One of the featured articles considers [flying etiquette](https://fivethirtyeight.com/features/airplane-etiquette-recline-seat/).  This article is based on data collected by FiveThirtyEight and publicly available on github. Use the code below to read in the data from the survey:
+
+2. FiveThirtyEight is a website founded by Statistician and writer Nate Silver to publish results from  opinion poll analysis, politics, economics, and sports blogging. One of the featured articles considers [flying etiquette](https://fivethirtyeight.com/features/airplane-etiquette-recline-seat/). This article is based on data collected by FiveThirtyEight and publicly available on github. Use the code below to read in the data from the survey:
 
 ```{r}
 fly <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/flying-etiquette-survey/flying-etiquette.csv")
@@ -43,64 +38,74 @@ fly$Household.Income <- factor(fly$Household.Income, levels = c("$0 - $24,999","
 fly$Education <- factor(fly$Education, levels = c("Less than high school degree", "High school degree", "Some college or Associate degree", "Bachelor degree",  "Graduate degree", ""))
 ```
 
+
 3. Some people do not travel often by plane. Provide a breakdown of travel frequency (use variable `How.often.do.you.travel.by.plane.`). Reorder the levels in the variable by travel frequency from least frequent travel to most frequent. Draw a barchart of travel frequency and comment on it. 
 
 ```{r}
-summary(fly$`How.often.do.you.travel.by.plane.`)
-fly$`How.often.do.you.travel.by.plane.` <- forcats::fct_relevel(fly$`How.often.do.you.travel.by.plane.`, "Never", "Once a year or less", "Once a month or less", "A few times per month", "A few times per week", "Every day")
-ggplot(fly) + geom_bar(aes(x = `How.often.do.you.travel.by.plane.`)) + coord_flip()
+library(ggplot2)
+fly$How.often.do.you.travel.by.plane.<- factor(fly$How.often.do.you.travel.by.plane., levels=c("Never", "Once a year or less", "Once a month or less" ,"A few times per month", "A few times per week", "Everyday" ,""))
+
+#barchart:
+ggplot(fly, aes(How.often.do.you.travel.by.plane.)) + geom_bar() + coord_flip() + xlab("How Often Do You Travel by Plane?")
+
 ```
 
-Most of the survey respondents fly once a year or less and the vast majority fly once a month or less.
+Based on the barchart above, it can be observed that most people travel once a year or less by plane, followed by never, once a month or less, a few times per month and lastly, a few times per week. The data also had a few no responses represented by the NA in the chart. 
 
 4. In the demographic variables (`Education`, `Age`, and `Houshold.Income`), replace all occurrences of the empty string "" by a missing value `NA`. How many responses do not have any missing values? (Hint: the function `is.na` might come in handy)
 
 ```{r}
-levels(fly$Education)[6] <- NA
-levels(fly$Age)[5] <- NA
-levels(fly$Household.Income)[6] <- NA
+levels(fly$Education)[6]<- NA
+levels(fly$Age)[5]<- NA
+levels(fly$Household.Income)[6]<- NA
 
-sum(is.na(fly$Education))
-sum(is.na(fly$Age))
-sum(is.na(fly$Household.Income))
+summary(is.na(fly$Education))
+summary(is.na(fly$Age))
+summary(is.na(fly$Household.Income))
+
+ 
 ```
 
+It can be observed via the is.na function on R that for Education, Age and Household.Income variables, there are 39, 33 and 214 missing values respectively.
 
 5. Run the command below and interpret the output. What potential purpose can you see for the chart? 
-
 ```{r, fig.width=8, fig.height=3, message=FALSE}
-library(ggplot2)
 fly$Education = with(fly, factor(Education, levels = rev(levels(Education))))
 
 ggplot(data = fly, aes(x = 1)) + 
-  geom_bar(aes(fill=Education), position="fill") +
+  geom_bar(aes(fill=Education), position="fill") + 
+  coord_flip() +
   theme(legend.position="bottom") +
-  scale_fill_brewer(na.value = "grey50") + 
-  labs(y = "Ratio") +
-  coord_flip()
+  scale_fill_brewer(na.value="grey50") + 
+  ylab("Ratio") 
 ```
 
-Because there is a natural ordering of the levels, this chart would allow us to lump categories together mentally. For instance, we can easily see that approximately 40% of the respondents replied that their education level is less than a Bachelors degree. 
+The plot above shows the ratio of the different education levels to the total number of responses. It can also be interpreted in percentages. For instance, less than 12.5% people had no responses for this question, while 50% of the people responded have graduate degrees and bachelor degrees. This plot could be useful for someone who is more interested in the cumulative dataset, rather than individual variables. 
 
 
 6. Rename the variable `In.general..is.itrude.to.bring.a.baby.on.a.plane.` to `baby.on.plane.`. How many levels does the variable `baby.on.plane` have, and what are these levels? Rename the level labeled "" to "Not answered". Reorder the levels of `baby.on.plane` from least rude to most rude. Put the level "Not answered" last. Draw a barchart of variable `baby.on.plane`.  Interpret the result.
 
 ```{r}
-names(fly)[19] <- "baby.on.plane."
-levels(fly$`baby.on.plane.`)[1] <- "Not answered"
-fly$`baby.on.plane.` <- forcats::fct_relevel(fly$`baby.on.plane.`, "No, not at all rude", "Yes, somewhat rude", "Yes, very rude", "Not answered")
-ggplot(fly) + geom_bar(aes(x = `baby.on.plane.`))
+library(dplyr)
+fly <- fly %>% rename(baby.on.plane.= In.general..is.itrude.to.bring.a.baby.on.a.plane.)
+levels(fly$baby.on.plane.)
+levels(fly$baby.on.plane.)[1]<- "Not Answered"
+
+fly$baby.on.plane. <- factor(fly$baby.on.plane., levels=c("No, not at all rude", "Yes, somewhat rude", "Yes, very rude", "Not Answered"))
+ggplot(fly, aes(baby.on.plane.)) + geom_bar() + coord_flip() + xlab("Is it rude to bring a baby on a plane?")
+
 ```
 
-Only a small number of respondents consider it somewhat rude to bring a baby on a plane and an even smaller number consider it to be very rude. 
+It can be observed from the barchart above that most people responded that "no, not at all rude" to have a baby on the plane, followed by "Not Answered," Yes, somewhat rude," and lastly, "Yes, very rude."
 
 7. Investigate the relationship between gender and the variables `Do.you.have.any.children.under.18.` and `baby.on.plane`. How is the attitude towards babies on planes shaped by gender and having children under 18? Find a plot that summarises your findings (use `ggplot2`).
 
 ```{r}
-levels(fly$`Do.you.have.any.children.under.18.`)[1] <- NA
-levels(fly$Gender)[1] <- NA
+levels(fly$Gender)[1]<- "NA"
+levels(fly$Do.you.have.any.children.under.18.)[1]<- "NA"
 
-ggplot(fly) + geom_bar(aes(x = Gender, fill = `baby.on.plane.`), position = "fill") + facet_grid(~`Do.you.have.any.children.under.18.`) 
+ggplot(fly, aes(baby.on.plane., fill=Gender, alpha = Do.you.have.any.children.under.18.)) + geom_bar() + coord_flip()
 ```
 
-It seems that those with children under 18 are less likely to be bothered by a baby on a plane. Additionally, whether or not the respondent had a child under 18 or not, if the respondent was a female, they were less likely to be bothered by a baby on a plane.
+To evaluate more than 2 categorical variables, I used both the fill nad alpha function. The fill function uses color to distinguish the different category for gender. The green color bars represents the female gender, while the blue represents the male gender. The alpha function allows for the transparency of the colors in the bars to represent that no response, followed by "no" and "yes," as transparency decreases. Hence, it can be observed that most responses for the "no, not at all rude" are females who also responded "no" to "having a baby under the age of 18." On the contrary, most responses for "yes, very rude" are males, who also responded that "no" to "having a baby under the age of 18." Those that responded "yes" to "having a a baby under the age of 18" mostly responded to "no, not rude at all" for having a baby on the plane. 
+
