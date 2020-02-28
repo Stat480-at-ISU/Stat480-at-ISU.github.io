@@ -380,7 +380,7 @@ summary {
 <h4>Measles Vaccination Rates</h4>
 <ol style="list-style-type: decimal">
 <li><p>Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace “Your Name” in the YAML with your name.</p></li>
-<li><p>The data this week comes from <a href="https://github.com/WSJ/measles-data">The Wallstreet Journal</a>. The dataset includes immunization rate data for schools across the U.S. The accompanying article is published <a href="https://www.wsj.com/graphics/school-measles-rate-map/">here</a>.</p></li>
+<li><p>The data this week comes from <a href="https://github.com/WSJ/measles-data">The Wallstreet Journal</a>. The data set includes immunization rate data for schools across the U.S. The accompanying article is published <a href="https://www.wsj.com/graphics/school-measles-rate-map/">here</a>.</p></li>
 </ol>
 <pre class="r"><code>library(dplyr)
 library(ggplot2)
@@ -391,11 +391,11 @@ measles &lt;- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytu
 </ol>
 <pre class="r"><code>## your answer here</code></pre>
 <ol start="4" style="list-style-type: decimal">
-<li>Using <code>mutate()</code>, reorder the levels of the variable <code>state</code> according to the median MMR vacination rate. Then “pipe” your results into ggplot and create boxplots of MMR vacination rates for each state. Map the variable <code>state</code> to <code>color</code>, include the parameter <code>show.legend = FALSE</code> within <code>geom_boxplot()</code>, and flip the coordinates. Interpret.</li>
+<li>Using <code>mutate()</code>, reorder the levels of the variable <code>state</code> according to the median MMR vaccination rate. Then “pipe” your results into ggplot and create box plots of MMR vaccination rates for each state. Map the variable <code>state</code> to <code>color</code>, include the parameter <code>show.legend = FALSE</code> within <code>geom_boxplot()</code>, and flip the coordinates. Interpret.</li>
 </ol>
 <pre class="r"><code>## your answer here</code></pre>
 <ol start="5" style="list-style-type: decimal">
-<li>According to the CDC, 95% of a population needs to be vaccinated to stop the spread of measles and preserve herd immunity. Using <code>mutate()</code> and <code>case_when()</code>, introduce a new variable into the dataset <code>mmr_threshold</code> where the value is “above” when <code>mmr</code> is greater than 95 and “below” otherwise. Is there a relationship between the type of school and the proportion of schools that did not reach that threshold? For each type of school, calculate the mean MMR vaccination rate. On how many responses are the averages based? Show these numbers together with the averages. Additionally, calculate the percentage of schools that did not reach that threshold. Arrange your results from greatest percentage to lowest. Comment on your results.</li>
+<li>According to the CDC, 95% of a population needs to be vaccinated to stop the spread of measles and preserve herd immunity. Using <code>mutate()</code> and <code>case_when()</code>, introduce a new variable into the data set <code>mmr_threshold</code> where the value is “above” when <code>mmr</code> is greater than 95 and “below” otherwise. Is there a relationship between the type of school and the proportion of schools that did not reach that threshold? For each type of school, calculate the mean MMR vaccination rate. On how many responses are the averages based? Show these numbers together with the averages. Additionally, calculate the percentage of schools that did not reach that threshold. Arrange your results from greatest percentage to lowest. Comment on your results.</li>
 </ol>
 <pre class="r"><code>## your answer here</code></pre>
 <ol start="6" style="list-style-type: decimal">
@@ -405,15 +405,15 @@ measles &lt;- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytu
 <li>only include observations with enrollment greater than 0 and exclude the school “West Valley School Prek-6” (there is an issue with that observation)<br />
 </li>
 <li>filter for rows that have a unique combination of the variables <code>year</code>, <code>city</code>, <code>state</code>, name, <code>type</code>, <code>enroll</code>, and <code>mmr</code> (there are duplicates in the data)</li>
-<li>Inside <code>mutate()</code> use <code>weighted.mean()</code> to calculate the mean MMR vacination rates weighted by the enrollment. Name this new variable <code>state_avg</code>.<br />
+<li>Inside <code>mutate()</code> use <code>weighted.mean()</code> to calculate the mean MMR vaccination rates weighted by the enrollment. Name this new variable <code>state_avg</code>.<br />
 </li>
-<li>For each city and state combination, calculate the mean MMR vacination rate weighted by enrollment, the total number of students enrolled, and the mean of the state average calculated in the previous step.<br />
+<li>For each city and state combination, calculate the mean MMR vaccination rate weighted by enrollment, the total number of students enrolled, and the mean of the state average calculated in the previous step.<br />
 </li>
 <li>only consider rows where the total enrollment is more than 250 and less than 100,000.</li>
 </ul>
 <pre class="r"><code>## your answer here</code></pre>
 <ol start="7" style="list-style-type: decimal">
-<li>Now use the previous data set to draw a scatterplot with the mean MMR rate for each city on the y-axis and the student enrollment on the x-axis and color by the state mean MMR rate. Use the code below as your starting point and add in the necessary aesthetic mappings within <code>ggplot(aes( ))</code>. Describe and summarise the chart.</li>
+<li>Now use the previous data set to draw a scatter plot with the mean MMR rate for each city on the y-axis and the student enrollment on the x-axis and color by the state mean MMR rate. Use the code below as your starting point and add in the necessary aesthetic mappings within <code>ggplot(aes( ))</code>. Describe and summarise the chart.</li>
 </ol>
 <pre><code>question6_data %&gt;%
   ggplot(aes( )) + 
