@@ -1,0 +1,111 @@
+---
+title: 'Stat 480 - Homework #6'
+date: "2/27/2020"
+output: html_document
+---
+---
+title: 'Stat 480 - Homework #6'
+date: "2/27/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+library(tidyverse)
+```
+
+<br/>
+
+#### Submission Details
+
+**Due date**: the homework is due before class on Thursday. 
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+#### Ames housing
+
+  
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
+
+  
+2. The Ames based, non-profit company OAITI provides aoe open-source data sets. One of these data sets consists of information on all house sales in Ames between 2008 and 2010. The following piece of code allows you to read the dataset into your R session. How many house sales were there between 2008 and 2010? Which type of variables are we dealing with?
+
+```{r}
+housing <- read.csv("https://raw.githubusercontent.com/OAITI/open-datasets/master/Housing%20Data/Ames-Housing.csv")
+str(housing)
+```
+
+1,615 houses were sold in Ames between 2008 and 2010. The dataset consists of integers and factor variables.
+
+  
+3. Do sales prices change over time? (Don't test significances) Provide a graphic that supports your statement.
+
+```{r}
+housing %>%
+        ggplot(aes(x= as.factor(YearSold), y=SalePrice)) + geom_boxplot()
+```
+
+Sale prices are pretty consistent from 2008 to 2010. The median sales price between years looks fairly similar with several houses in each year having high price outliers.
+  
+4. What is the relationship between sales prices and the size of the house (living area)? Make a chart and describe the relationship.
+
+```{r}
+ggplot(data = housing, aes (x = LivingArea, y = SalePrice)) + geom_point()
+
+```
+
+There is a strong, positive, quadratic relationship between sales price and living area. There are several outliers in both directions. As the amount of living area increases, so does the sales price.
+
+5. Use `dplyr` functions to:  
+  
+  - introduce a variable consisting of price per square foot,   
+  - find the average price per square foot in each of the Ames neighborhoods,            
+  - exclude averages that are based on fewer than 10 records,  
+  - reorder the remaining neighborhoods according to the mean sales prices.  
+
+
+6. Draw a chart of the average sale prices by neighborhood and comment on it. Only consider neighborhoods with at least 10 sales. <br><br> **Bonus**: write the code for this question and the previous one in a single statement for +0.5 point extra credit.
+
+```{r}
+housing %>%
+    mutate(PriceSqFt = SalePrice/(LivingArea)) %>% 
+    group_by(Neighborhood) %>%
+      summarise(
+        n = n(),
+        avg = mean(PriceSqFt, na.rm = TRUE)
+        ) %>%
+        filter( n > 10) %>%
+          mutate(Neighborhood = reorder(Neighborhood, avg)) %>% 
+            ggplot(aes(x = Neighborhood, y = avg)) + geom_point() + theme(axis.text.x = element_text(angle = 90))
+
+```
+
+S&W ISU has the lowest average price per square foot, at about \$50, and GrnHill has the highest average price per square foot, at about \$183.
+
+
+7. Use `dplyr` functions to:
+
+  - introduce a logical variable called 'garage' that is FALSE if the garage area is zero, and TRUE otherwise,
+  - exclude all sales of houses that do not have a garage,
+  - only consider 1 and 2 story houses (`HouseStyle`),
+  - create a new variable `YBCut` from `YearBuilt` that introduces age categories that groups the year a house was built into intervals: 1800-1850, 1850-1900, 1950-2000, 2000+ (see `?cut`).
+  
+  
+8. Draw a chart of the previous data set. Draw side-by-side boxplots of the garage area by `YBCut`. Facet by the style of house. Describe and summarise the chart. <br><br> **Bonus**: write the code for this question and the previous one in a single statement for +0.5 point extra credit.
+
+```{r}
+housing %>% 
+  mutate(Garage = GarageArea != 0) %>%
+    filter(Garage == TRUE, HouseStyle == "1-Story" | HouseStyle == "2-Story") %>%
+    mutate(YBCut = cut(YearBuilt, breaks = c(1800, 1850, 1900, 1950, 2000, 2010), 
+                     labels = c("1800-1850", "1850-1900", "1900-1950", "1950-2000", "2000+"))) %>%
+   ggplot(aes(x = YBCut, y = GarageArea)) + geom_boxplot() + facet_wrap(~HouseStyle) + theme(axis.text.x = element_text(angle = 90))
+```
+
+For one story houses, the highest median garage area is in the houses built after 2000, then the houses built from 1950-2000, 1850-1900, and 1950 to 2000. There doesn’t seem to be much of a spread for houses built before 1950. For two story houses, the highest median garage area is in the houses built after 2000, then the houses built from 1900-1950, 1850-1900, and 1950 to 2000
+
+
+
+
