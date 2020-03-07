@@ -106,7 +106,7 @@ question6_data %>%
 
 
 
-7. Did the content of the paintings change over time? We will attempt to answer this question by looking at elements that appeared in more than 90 paintings and their trends over the seasons.  Use the data `bob_ross_elements` as your starting point and for each season and element, calculate the number of times an element was included. Then calculate the total number of times an element. Exclude elements that were included in less than 90 paintings total. Create a line plot showing number of times an element was included for each season with season on the x-axis and facet by element. Use the code below as your starting point and add in the necessary aesthetic mappings within `ggplot(aes( ))` and add in the faceting. Describe and summarize the chart.
+7. Did the content of the paintings change over time? We will attempt to answer this question by looking at elements that appeared in more than 90 paintings and their trends over the seasons.  Use the data `bob_ross_elements` as your starting point and for each season and element, calculate the number of times an element was included. Exclude elements that were included in less than 90 paintings total. Create a line plot showing number of times an element was included for each season with season on the x-axis and facet by element. Use the code below as your starting point and add in the necessary aesthetic mappings within `ggplot(aes( ))` and add in the faceting. Describe and summarize the chart.
 
 ```
 question7_data %>%
