@@ -397,7 +397,7 @@ library(readr)</code></pre>
 <pre class="r"><code># read in the data
 bob_ross &lt;- read_csv('https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/homework/data/bob-ross.csv')</code></pre>
 <ol start="3" style="list-style-type: decimal">
-<li>Variables <code>alizarin_crimson</code> through <code>yellow_ochre</code> correspond to the binary presence (0 or 1) of that color in the painting. Gather all of these variables and create a long form of the data, introducing two new variables called <code>color</code> and <code>presence</code>. Save the result in a data frame called <code>bob_ross_colors</code>.</li>
+<li>Variables <code>alizarin_crimson</code> through <code>burnt_umber</code> correspond to the binary presence (0 or 1) of that color in the painting. Gather all of these variables and create a long form of the data, introducing two new variables called <code>color</code> and <code>presence</code>. Save the result in a data frame called <code>bob_ross_colors</code>.</li>
 </ol>
 <pre class="r"><code>## your answer here</code></pre>
 <ol start="4" style="list-style-type: decimal">
@@ -411,7 +411,7 @@ bob_ross &lt;- read_csv('https://raw.githubusercontent.com/Stat480-at-ISU/Stat48
   labs(y = &quot;Number of paintings&quot;,
        x = &quot;&quot;, 
        title = &quot;Frequency of colors in Bob Ross Paintings&quot;) +
-  scale_fill_manual(values = c(&quot;#2C6436&quot;, &quot;#3C67A7&quot;, &quot;#643914&quot;, &quot;#E7BD2F&quot;, &quot;#546F1F&quot;, &quot;#C36A4A&quot;, &quot;#346BB1&quot;, &quot;#B58A30&quot;, &quot;#F8ED5F&quot;, &quot;#372518&quot;, &quot;#973B29&quot;)) </code></pre>
+  scale_fill_manual(values = c(&quot;#CD5C5C&quot;, &quot;#8A3324&quot;, &quot;#2C6436&quot;, &quot;#3C67A7&quot;, &quot;#643914&quot;, &quot;#E7BD2F&quot;, &quot;#546F1F&quot;, &quot;#C36A4A&quot;, &quot;#346BB1&quot;, &quot;#B58A30&quot;, &quot;#F8ED5F&quot;, &quot;#372518&quot;, &quot;#973B29&quot;)) </code></pre>
 <pre class="r"><code>## your answer here</code></pre>
 <ol start="5" style="list-style-type: decimal">
 <li>For this question use the original data again. Variables <code>aurora_borealis</code> through <code>winter</code> correspond to the binary presence (0 or 1) of that element in the painting. Use <code>pivot_longer()</code> as shown in class to transform the data into a tidier format with new variables <code>element</code> and <code>presence</code>. Save the result in a data frame called <code>bob_ross_elements</code>.</li>
