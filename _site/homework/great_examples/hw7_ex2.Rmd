@@ -1,0 +1,150 @@
+---
+title: 'Stat 480 - Homework #7'
+date: "3/5/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+<br/>
+
+#### Submission Details
+
+**Due date**: the homework is due before class on Thursday. 
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+#### Measles Vaccination Rates
+
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
+
+
+2. The data this week comes from [The Wallstreet Journal](https://github.com/WSJ/measles-data). The dataset includes immunization rate data for schools across the U.S. The accompanying article is published [here](https://www.wsj.com/graphics/school-measles-rate-map/).   
+
+```{r }
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(forcats)
+measles <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
+```
+
+3. For how many schools do we have data? How many of these schools recorded their Measles, Mumps, and Rubella (MMR) vaccination rate? Use the variable `mmr` to answer this question. Only consider schools with a rate > 0 for the remainder of the homework.  
+
+```{r}
+measles %>% 
+  summarise(total_schools=n())
+
+measles %>% 
+  filter(mmr>0) %>% 
+  summarise(total_recorded_mmr=n())
+```
+There are 66113 schools in this dataset. There are 44157 schools that have recorded their mmr vaccination rate.
+  
+4. Using `mutate()`, reorder the levels of the variable `state` according to the median MMR vacination rate. Then "pipe" your results into ggplot and create boxplots of MMR vacination rates for each state. Map the variable `state` to `color`, include the parameter `show.legend = FALSE` within `geom_boxplot()`, and flip the coordinates. Interpret.  
+
+```{r}
+measles %>% 
+  filter(mmr>0) %>% 
+  mutate(state=fct_reorder(state, mmr, median)) %>% 
+  ggplot(aes(x=state, y=mmr))+geom_boxplot(aes(color=state), show.legend = FALSE)+coord_flip()
+```
+
+Arkansas has the smallest median mmr rate and South Dakota has the largest. For each state there are numerous lower outliers but there are no higher outliers. California, Missouri and Arkansas are the only states that do not have a maximum mmr rate of 100.
+  
+5. According to the CDC, 95% of a population needs to be vaccinated to stop the spread of measles and preserve herd immunity. Using `mutate()` and `case_when()`, introduce a new variable into the dataset `mmr_threshold` where the value is "above" when `mmr` is greater than 95 and "below" otherwise. Is there a relationship between the type of school and the proportion of schools that did not reach that threshold? For each type of school, calculate the mean MMR vaccination rate. On how many responses are the averages based? Show these numbers together with the averages. Additionally, calculate the percentage of schools that did not reach that threshold. Arrange your results from greatest percentage to lowest. Comment on your results.  
+
+```{r}
+measles %>% 
+  filter(mmr>0) %>% 
+  group_by(type) %>% 
+  mutate(mmr_threshold=case_when(mmr > 95 ~ "above",
+                                 mmr <=95 ~ "below")) %>% 
+  summarise(m.mmr=mean(mmr),
+            n_school=n(),
+            below_thresholdpercent=(sum(mmr_threshold=="below")/n())*100)%>% 
+  arrange(desc(below_thresholdpercent))
+```
+
+When comparing the types of schools, charter schools have the highest percent of schools that did not meet the mmr threshold of 95%, and BOCES has the smallest percent of schools that did not meet the threshold. There is an NA type of school that has the second most number of schools in that category right after public schools. The second highest percentage for percent below threshold goes down drastically from 73 to 46.
+
+6. Use `dplyr` functions to:
+
+  - only include observations with enrollment greater than 0 and exclude the school "West Valley School Prek-6" (there is an issue with that observation)  
+  - filter for rows that have a unique combination of the variables `year`, `city`, `state`, name, `type`, `enroll`, and `mmr` (there are duplicates in the data)
+  - Inside `mutate()` use `weighted.mean()` to calculate the mean MMR vacination rates weighted by the enrollment. Name this new variable `state_avg`.  
+  - For each city and state combination, calculate the mean MMR vacination rate weighted by enrollment, the total number of students enrolled, and the mean of the state average calculated in the previous step.  
+  - only consider rows where the total enrollment is more than 250 and less than 100,000.
+  
+```{r}
+measles %>% 
+  filter(mmr>0, enroll>0, name != "West Valley School Prek-6") %>% 
+  distinct(year, city, state, name, type, enroll, mmr) %>% 
+  group_by(state) %>% 
+  mutate(state.avg=weighted.mean(mmr, enroll)) %>% 
+  group_by(state, city) %>% 
+  summarize(m_mmr=weighted.mean(mmr, enroll),
+            total_enroll=sum(enroll),
+            m_state.avg=mean(state.avg)) %>% 
+  filter(total_enroll>250 & total_enroll<100000) %>% 
+  head()
+
+```  
+  
+  
+7. Now use the previous data set to draw a scatterplot with the mean MMR rate for each city on the y-axis and the student enrollment on the x-axis and color by the state mean MMR rate. Use the code below as your starting point and add in the necessary aesthetic mappings within `ggplot(aes( ))`. Describe and summarise the chart.
+
+```
+question6_data %>%
+  ggplot(aes( )) + 
+  geom_hline(yintercept = 95, linetype = "dashed", size = 0.25, color = "grey40") +
+  geom_point(size = 2, alpha = .3) +
+  scale_color_gradient(low = "red", high = "blue", limits=c(88, 96), oob = scales::squish, 
+  guide = guide_colorbar(direction = "horizontal", title.position = "top", 
+                        title = "State average immunization rate", barwidth = 15, barheight = 0.25, 
+                        ticks = FALSE, title.hjust = 0.5)) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  ggtitle("MMR immunization rates at schools grouped across US cities") +
+  labs(subtitle="According to data collected by The Wall Street Journal",
+       x = "Student Enrollment", y = "") +
+  scale_x_continuous(labels = scales::comma) 
+```
+  
+  
+```{r}
+measles %>% 
+  filter(mmr>0, enroll>0, name != "West Valley School Prek-6") %>% 
+  select(year, city, state, name, type, enroll, mmr) %>% 
+  distinct() %>% 
+  group_by(state) %>% 
+  mutate(state.avg=weighted.mean(mmr, enroll)) %>% 
+  group_by(state, city) %>% 
+  summarize(m_mmr=weighted.mean(mmr, enroll),
+            total_enroll=sum(enroll),
+            m_state.avg=mean(state.avg)) %>% 
+  filter(total_enroll>250 & total_enroll<100000) %>%
+  ggplot(aes(x=total_enroll, y=m_mmr)) + 
+  geom_hline(yintercept = 95, linetype = "dashed", size = 0.25, color = "grey40") +
+  geom_point(aes(color=m_state.avg), size = 2, alpha = .3) +
+  scale_color_gradient(low = "red", high = "blue", limits=c(88, 96), oob = scales::squish, 
+  guide = guide_colorbar(direction = "horizontal", title.position = "top", 
+                        title = "State average immunization rate", barwidth = 15, barheight = 0.25, 
+                        ticks = FALSE, title.hjust = 0.5)) +
+  theme_minimal() +
+  theme(legend.position = "bottom") +
+  ggtitle("MMR immunization rates at schools grouped across US cities") +
+  labs(subtitle="According to data collected by The Wall Street Journal",
+       x = "Student Enrollment", y = "") +
+  scale_x_continuous(labels = scales::comma) 
+```
+
+The majority of the cities that have high state average immunization rates have high mean mmr rates and low student enrollment. The citities that have low state average immunization rates also have lower mean mmr rates than those with higher state average immunization rates. There are a couple outliers where a city has a high state immunization rate, but very low mean mmr rate. It also seems like student enrollment doesn't really affect anything that much. 
+
+
+
