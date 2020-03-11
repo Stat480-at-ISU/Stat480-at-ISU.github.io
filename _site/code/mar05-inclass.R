@@ -70,7 +70,9 @@ stocks %>%
                values_to = "return",
                names_ptype = list(year = double()))
 
-#------------------
+
+# slides: dealing with messy (2) ---------------------
+
 df <- data_frame(x = c(NA, "a45.1432", "a754.442", "b3.3234"))
 df
 
