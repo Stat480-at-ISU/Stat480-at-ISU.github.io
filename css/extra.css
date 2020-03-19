@@ -11,3 +11,19 @@ dd {
     -webkit-margin-start: 40px;
     -moz-margin-start: 40px;
 }
+
+/* -----------div tips------------- */
+
+div.note {
+    padding: 2em;
+    margin: 4em 3em;
+    /*padding-top: 550px;
+    background-image: url("https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRacrBy8tv09MoFnRJ0rPiuoXMlpE37zudeEPKsXifaCp2rW-gu");
+    background-size: 500px;
+    background-repeat: no-repeat;
+    background-position: center 5px;*/
+    min-height: 120px;
+    color: #333A36;
+    /*background-color: #fafafA;*/
+    border: solid 5px #bbbe4a;
+  }
