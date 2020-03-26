@@ -26,24 +26,20 @@ When and where was the strongest earthquake? What was its magnitude?
 # place the code for your answer here
 ```
 
-3. Which countries/states had the most earthquakes? List the top five. <br>
-Using ggplot2, create a barchart of country, sort by frequency of earthquakes. 	<br>
-Make sure that labels are readable in the barchart.
+3. Which countries/states had the most earthquakes? List the top five. Using ggplot2, create a barchart of the top 20 countries, sort by frequency of earthquakes. Make sure that labels are readable in the barchart.
 
 ```{r}
 # place the code for your answer here
 ```
 
-4. Create a new variable 'Country10' in the earthquake data that contains the country names  for the  ten countries/states with the highest number of earthquakes, and combines all other records in a category 'Other'. <br>
-Show (using the ggplot2 package) boxplots of magnitude by country. Make sure to sort countries from lowest to highest median magnitude.
+4. Create a new variable 'Country10' in the earthquake data that contains the country names  for the  ten countries/states with the highest number of earthquakes, and combines all other records in a category 'Other'. Show (using the ggplot2 package) boxplots of magnitude by country. Make sure to sort countries from lowest to highest median magnitude.
 
 ```{r}
 # place the code for your answer here
 ```
 
 5.	Draw a histogram of magnitude of earthquakes - make sure to not get a warning message.
-	Describe the shape of the density. <br>
-	Use the histogram to pick a suitable cutoff between 'small' and 'large' earthquakes. 
+	Describe the shape of the density. Use the histogram to pick a suitable cutoff between 'small' and 'large' earthquakes. 
 ```{r}
 # place the code for your answer here
 ```

@@ -1,5 +1,9 @@
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
 ```
 
 The United States Geological Survey continuously monitors earth quakes and makes the corresponding data available to the public. 
@@ -7,54 +11,74 @@ A dataset containing all worldwide earth quakes  for a time frame of 30 days is 
 
 You can find the accompanying codebook at <a href="http://earthquake.usgs.gov/earthquakes/feed/v1.0/csv.php">US Geology Survey</a> (you should be able to answer all questions in this exam without the codebook). 
 
-1. Load the data into R. What is the time frame under consideration? How many earthquakes were there?
-When and where was the strongest earthquake? What was its magnitude?
+1. Load the data into R.  
 
 ```{r}
 eq <- read.csv("http://www.hofroe.net/data/earthquakes.csv")
+```
 
-# time frame:
+
+What is the time frame under consideration? 
+
+```{r}
 eq$Date <- lubridate::ymd(eq$Date)
 summary(eq$Date)
-# the range of dates considered is between
-min(eq$Date) # Sep 5 2012
-# and 
-max(eq$Date) # Oct 5 2012
-
-# number of earth quakes:
-nrow(eq)
-# [1] 7162
-
-eq[which.max(eq$Magnitude), c("Date", "Location")]
-#          Date               Location
-#952 2012-09-30 9km WNW of San Agustin
-max(eq$Magnitude)
-#[1] 7.3
 ```
+
+**The range of dates considered is between `r min(eq$Date)` and `r max(eq$Date)`.** 
+
+How many earthquakes were there?
+
+```{r}
+nrow(eq)
+```
+
+**There were 7,162 earthquakes.**
+
+
+When and where was the strongest earthquake? 
+
+```{r}
+eq[which.max(eq$Magnitude), c("Date", "Location")]
+```
+
+
+What was its magnitude?
+
+```{r}
+max(eq$Magnitude)
+```
+
 
 2. The variable 'Country' contains country names or states (in the case of the US). California is listed both as 'CA' and as 'California'. Convert all elements in the variable from 'CA' to "California'. 
 
 ```{r}
 levels(eq$Country)[11] <- "California"
 sort(table(eq$Country), decreasing=TRUE)[1:5]
-#            California                 Alaska British Virgin Islands 
-#                  2957                   1907                    479 
-#                Nevada             Washington 
-#                   242                    207 
-
 ```
 
-3. Which countries/states had the most earthquakes? List the top five. <br>
-Using ggplot2, create a barchart of country, sort by frequency of earthquakes. 	<br>
-Make sure that labels are readable in the barchart.
+3. Which countries/states had the most earthquakes? List the top five. Using ggplot2, create a barchart of the top 20 countries, sort by frequency of earthquakes. 	Make sure that labels are readable in the barchart.
 
 ```{r}
 library(ggplot2)
 library(dplyr)
+library(forcats)
 
-eq %>% mutate(
-  Country = reorder(Country, Country, length)) %>%
-  ggplot(aes(x = Country)) + geom_bar() + coord_flip()
+eq %>% 
+  group_by(Country) %>% 
+  tally() %>% 
+  arrange(desc(n)) %>% 
+  slice(1:5)
+
+eq %>% 
+  group_by(Country) %>% 
+  tally() %>% 
+  arrange(desc(n)) %>% 
+  slice(1:20) %>% 
+  mutate(Country = fct_reorder(Country, n)) %>%
+  ggplot(aes(x = Country, weight = n)) + 
+  geom_bar() + 
+  coord_flip()
 ```
 
 4. Create a new variable 'Country10' in the earthquake data that contains the country names  for the  ten countries/states with the highest number of earthquakes, and combines all other records in a category 'Other'. <br>
@@ -95,8 +119,10 @@ worldmap <- world %>% ggplot(aes(x = long, y = lat, group=group)) +
   geom_polygon(fill = "grey50") 
 
 worldmap + geom_point(aes(x = Longitude, y = Latitude, colour = size, group=1), data = eq)
-# US has most of small earthquakes
 ```
+
+**US has most of small earthquakes**
+
 
 7. Using dplyr, determine for each date
 
@@ -107,13 +133,14 @@ worldmap + geom_point(aes(x = Longitude, y = Latitude, colour = size, group=1), 
   Based on the summary data, draw a single chart that incorporates all of the above information.
 
 ```{r}
-eq.stats <- eq %>% group_by(Date) %>% summarize(
-	n = n(),
-	Magnitude = mean(Magnitude),
-	Country = names(sort(table(Country), decreasing=TRUE))[1]
-)
-
-eq.stats %>% 
-  ggplot(aes(x = Date, y = n, colour=Country, size=Magnitude)) + 
+eq_stats <- eq %>% 
+  group_by(Date) %>% 
+  summarize(
+    n = n(),
+    Magnitude = mean(Magnitude),
+    Country = names(sort(table(Country), decreasing=TRUE))[1]
+  )
+ 
+ggplot(eq_stats, aes(x = Date, y = n, colour=Country, size=Magnitude)) + 
   geom_point()
 ```

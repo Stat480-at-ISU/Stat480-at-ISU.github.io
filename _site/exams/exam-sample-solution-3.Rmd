@@ -1,5 +1,9 @@
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE
+)
 ```
 
 Work on questions in R, make sure to keep a copy of your R code - you will be asked to submit this script at the end.
@@ -8,33 +12,22 @@ Data on all flights in and out of Des Moines (DSM) for October 2008 are availabl
 See <a href="http://stat-computing.org/dataexpo/2009/the-data.html">http://stat-computing.org/dataexpo/2009/the-data.html</a> for a description of the variables.
 
 1. Load the flights data into R. <br>
-		Determine, which flight was delayed the most on arrival. Report its row number, where it started, and by how much the flight was delayed on departure.  </p>
+		Determine, which flight was delayed the most on arrival. Report its row number, where it started, and by how much the flight was delayed on departure.  
+		
+		
 ```{r}
 flights <- read.csv("http://www.hofroe.net/data/dsm-flights.csv")
-
-# which flight was delayed the worst? - where did the flight start? 
-# was it delayed when departing? 
 which.max(flights$ArrDelay)
-# 1516
-
 flights[which.max(flights$ArrDelay), c("Origin", "DepDelay")]
-#     Origin DepDelay
-#1516    DSM      614
 ```
 
 2. Bring the variable 'Day' into the correct order, starting with 'Monday'.
 
 ```{r}
 summary(flights$Day)
-#   Friday    Monday  Saturday    Sunday  Thursday   Tuesday Wednesday 
-#      456       368       248       336       460       360       459 
-
 days <- levels(flights$Day)
 flights$Day <- factor(flights$Day, levels=days[c(2,6,7,5,1,3,4)])
-
 summary(flights$Day)
-#   Monday   Tuesday Wednesday  Thursday    Friday  Saturday    Sunday 
-#      368       360       459       460       456       248       336 
 ```
 
 3. Create a new variable called 'Weekend' which has value TRUE for Saturdays and Sundays and FALSE otherwise. 
@@ -44,8 +37,6 @@ summary(flights$Day)
 flights$Weekend <- flights$Day %in% c("Saturday", "Sunday")
 
 summary(flights$Weekend)
-#   Mode   FALSE    TRUE    NA's 
-#logical    2103     584       0 
 ```
 
 4. Determine how many flights arrived in Des Moines on average each day of the week. 
@@ -53,9 +44,6 @@ summary(flights$Weekend)
 ```{r}
 # idea 1:
 table(subset(flights, Dest=="DSM")$Day) # overall number of flights by day of week
-
-#   Monday   Tuesday Wednesday  Thursday    Friday  Saturday    Sunday 
-#      184       180       230       230       228       124       168 
 # problem: how many Mondays, Tuesdays, are there in October 2008?
 
 require(lubridate)
