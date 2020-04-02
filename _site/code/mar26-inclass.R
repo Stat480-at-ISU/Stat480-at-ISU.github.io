@@ -33,9 +33,11 @@ sqrt(ifelse(x >= 0, x, NA))  # no warning
 
 sample %>% 
   mutate(week_diff = Week - lag(Week),
-         rank_last_week = ifelse(week_diff == 1, lag(Rank, order_by = Week), NA)) %>% 
-  select(Week, Rank, Rank.Last.Week, -week_diff, rank_last_week)
+         rank_last_week_old = lag(Rank, order_by = Week), 
+         rank_last_week = ifelse(week_diff == 1, rank_last_week_old, NA)) %>% 
+  select(Week, Rank, Rank.Last.Week, week_diff, rank_last_week_old, rank_last_week)
 
+cumsum(1:10)
 
 # slides: dealing with messy (4) ---------------------
 
