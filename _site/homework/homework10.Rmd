@@ -1,0 +1,70 @@
+---
+title: 'Stat 480 - Homework #10'
+author: "Your Name"
+date: "4/09/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+<br/>
+
+#### Submission Details
+
+**Due date**: the homework is due before class on Thursday. 
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+
+#### NYC flights data
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
+
+2. For this homework we will use the data sets provided by the `nycflights13` package.
+
+```{r, message=FALSE, warning=FALSE}
+library(nycflights13)
+library(tidyverse)
+```
+
+3. What are the ten most common destinations for flights from NYC airports in 2013? Make a table that lists these in descending order and shows the number of fligts heading to each airport.  
+
+```{r}
+## your answer here
+```
+
+
+4. What was the mean temperature at the origin airport on the day with the highest departure delay? Your answer should include the name of origin airport, the date with the highest departure delay, and the mean temperature on that day.
+
+```{r}
+## your answer here
+```
+
+
+
+5. Find the flight with the longest air time. <br>(a) How long is this flight? <br>(b) What city did it fly to? <br>(c) How many seats does the plane that flew this flight have?
+
+```{r}
+## your answer here
+```
+
+
+6. Consider only flights that have non-missing arrival delay information. Your answer should include the name of the carrier in addition to the carrier code and the values asked. (a) Which carrier had the highest mean arrival delay? (b) Which carrier had the lowest mean arrival delay? Make sure that your answer includes the name of the carrier and the calculated mean delay.
+
+```{r}
+## your answer here
+```
+
+
+7. Which airlines have the most flights departing from NYC airports in 2013? Make a table that lists these in descending order of frequency and shows the number of flights for each airline. In your narrative mention the names of the airlines as well.<br>**Hint**: You can use the airlines dataset to look up the airline name based on carrier code.*
+
+
+```{r}
+## your answer here
+```
