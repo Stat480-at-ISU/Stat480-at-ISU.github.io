@@ -106,7 +106,6 @@ dep.summary <- flights %>%
   mutate(test = n()) %>% 
   group_by(hour) %>% 
   mutate(rank = dense_rank(desc(test))) %>% 
-  arrange(hour, desc(rank)) %>% 
   summarise(
     count = n(),
     pct.delayed = sum(DepDelay>15, na.rm=TRUE)/n()*100,

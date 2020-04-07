@@ -499,7 +499,6 @@ ggplot( aes(x = reorder(factor(Origin), ArrDelay, na.rm=T), y = ArrDelay)) + geo
   mutate(test = n()) %&gt;% 
   group_by(hour) %&gt;% 
   mutate(rank = dense_rank(desc(test))) %&gt;% 
-  arrange(hour, desc(rank)) %&gt;% 
   summarise(
     count = n(),
     pct.delayed = sum(DepDelay&gt;15, na.rm=TRUE)/n()*100,
