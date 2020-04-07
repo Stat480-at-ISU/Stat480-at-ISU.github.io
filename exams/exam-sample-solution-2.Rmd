@@ -91,14 +91,15 @@ eq %>%
 Show (using the ggplot2 package) boxplots of magnitude by country. Make sure to sort countries from lowest to highest median magnitude.
 
 ```{r}
-top10 <- names(sort(table(eq$Country), decreasing = TRUE))[1:10]
-eq$Country10 <- top10[with(eq, match(Country, top10))]
-eq$Country10[is.na(eq$Country10)] <- "Other"
-
-eq %>% mutate(
-  Country10 = reorder(Country10, Magnitude, na.rm=TRUE, FUN = median)
-) %>%
-  ggplot(aes(x = Country10, y = Magnitude)) + geom_boxplot() + coord_flip()
+eq %>% 
+  filter(!is.na(Country)) %>% 
+  mutate(
+    Country10 = forcats::fct_lump(Country, 10),
+    Country10 = forcats::fct_reorder(Country10, Magnitude, na.rm=TRUE, .fun = median)
+  ) %>%
+  ggplot(aes(x = Country10, y = Magnitude)) + 
+  geom_boxplot() +
+  coord_flip()
 ```
 
 5.	Draw a histogram of magnitude of earthquakes - make sure to not get a warning message.

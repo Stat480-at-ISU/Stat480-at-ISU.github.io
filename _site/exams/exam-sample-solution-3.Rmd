@@ -72,6 +72,12 @@ nrow(subset(flights, Dest=='DEN'))/nrow(subset(flights, Dest != 'DSM'))*100
 7. Where do most flights arriving in Des Moines come from? (use IATA code) </p>
 
 ```{r}
+flights %>% 
+  filter(Origin != "DSM") %>% 
+  group_by(Origin) %>% 
+  summarise(n = n()) %>% 
+  arrange(desc(n))
+
 sort(table(flights$Origin), decreasing=T)[2]
 ```
 
@@ -91,16 +97,24 @@ ggplot(	aes(x = reorder(factor(Origin), ArrDelay, na.rm=T), y = ArrDelay)) + geo
   - the top 3 destinations.
 
 Draw a scatterplot of average departure delay by scheduled hour of departure. Color points by top destination, adjust point size to reflect the number of flights for each hour. 
+
 ```{r}
-dep.summary <- flights %>% filter(Origin == 'DSM') %>% mutate(hour = CRSDepTime%/%100) %>% group_by(hour) %>%
+dep.summary <- flights %>% 
+  filter(Origin == 'DSM') %>%
+  mutate(hour = CRSDepTime%/%100) %>% 
+  group_by(hour, Dest) %>%
+  mutate(test = n()) %>% 
+  group_by(hour) %>% 
+  mutate(rank = dense_rank(desc(test))) %>% 
+  arrange(hour, desc(rank)) %>% 
   summarise(
     count = n(),
     pct.delayed = sum(DepDelay>15, na.rm=TRUE)/n()*100,
     avg.delay = mean(DepDelay, na.rm=T),
-    top.Dest.1=names(sort(table(Dest), decreasing=T))[1],
-    top.Dest.2=names(sort(table(Dest), decreasing=T))[2],
-    top.Dest.3=names(sort(table(Dest), decreasing=T))[3] 
-  )
+    top.Dest.1 = Dest[which.max(test)],
+    top.Dest.2 = first(Dest[which(rank == 2)]),
+    top.Dest.3=first(Dest[which(rank == 3)]))
+
 
 dep.summary %>% 
   ggplot(aes(x = hour, avg.delay, colour = top.Dest.1, size = count)) + geom_point()
