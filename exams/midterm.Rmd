@@ -263,7 +263,7 @@ In order to continue with an analysis of this data, we should reshape it.
       - Create a subset of the `cases100` that contains only the last date and save as `cases100_last`.
       - Extra credit: Using `cases100` and `cases100_last`, recreate the visualization below.  
       
-![](images/covid-growth.png)
+![](https://github.com/Stat480-at-ISU/Stat480-at-ISU.github.io/blob/master/exams/images/covid-growth.png?raw=true)
 
 ```{r}
 ## your answer here
