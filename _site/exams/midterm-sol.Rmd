@@ -1,0 +1,385 @@
+---
+title: "Stat 480: Midterm solution"
+date: "4/10/2020"
+output: html_document
+---
+
+<style>
+pre {margin: 0px 0 10px 30px;}
+h1, .h1, h2, .h2, h3, .h3, h4, .h4 {margin-top: 30px;}
+p {margin-top: 20px;}
+</style>
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = TRUE,
+	message = FALSE,
+	warning = FALSE,
+	fig.align="center",
+	fig.height = 4
+)
+# the following code to sets up defaults for the document
+library(ggplot2)
+my_theme <- function (base_size = 12, base_family = "Helvetica") {
+  theme_gray() +
+    theme(
+      rect = element_rect(fill = NA, linetype = 0, colour = NA, size = base_size/22),
+      text = element_text(family = base_family, face = "plain", color = "black", size = base_size, hjust = 0.5, vjust = 0.5, angle = 0, lineheight = 0.9, margin = margin(), debug = FALSE),
+      panel.border = element_blank(),
+      panel.background = element_blank(),
+      plot.caption = element_text(color = "grey70"),
+         legend.title = element_blank(),
+        legend.position = "right",
+        panel.grid.minor.y = element_line(colour = "grey80"), 
+        panel.grid.major.x = element_line(colour = "grey80", size = rel(0.25)),
+        panel.grid.minor = element_line(size = rel(0.25), colour = "grey80", linetype = "dotted"),
+        panel.grid.major.y = element_line(colour = "grey80", size = rel(0.3))
+    )
+}
+theme_set(my_theme())
+my_pal <- c("#9A703EFF", "#16A08CFF", "#FEC10BFF", "#149BEDFF", "#EE0011FF", "#15983DFF", "#EC579AFF", "#A1C720FF", "#FA6B09FF")
+scale_colour_discrete <- function(...) {scale_colour_manual(..., values = my_pal)}
+scale_fill_discrete <- function(...) {scale_fill_manual(..., values = rev(my_pal))}
+```
+
+<br/>  
+```{r libraries, include = FALSE}
+library(tidyverse)
+library(lubridate)
+library(forcats)
+```
+  
+
+## Tracking the Global Outbreak of COVID-19
+
+The coronavirus pandemic has sickened more than 1.4 million people, according to official counts. Here, we will explore both the global and local growth of COVID-19 using data sourced on April 8th, 2020.
+
+
+### Part I: Recovery data
+
+This data set contains information on some of the first fully recovered cases of COVID-19. We will look at the time it took these patients to recover, defined as the number of days between a confirmed test and an official discharge date. The data is available at [https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/exams/data/covid19-recovered.csv](https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/exams/data/covid19-recovered.csv)
+
+#### Question #1: An overview (5 pts)
+
+(i) Read the data without downloading the file locally.  
+
+```{r}
+recovery_data <- readr::read_csv("https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/exams/data/covid19-recovered.csv")
+```
+
+(ii) A first look:  
+      - What are the dimensions of the data?  
+      - What variables are included and what are their types?
+
+```{r}
+recovery_data %>% glimpse()
+```
+
+There are 100 observations of 6 variables. The variables included consist of 4 character variables (`confirmed`, `discharged`, `recovery`, and `category`), and 2 numeric variables (`age` and `gender`).
+
+
+#### Question #2-3: Some wrangling (17 pts)
+
+In order to continue with an analysis of this data, we should make some modifications to it.
+
+(i) Use functions from the `tidyverse` package to make the following modifications:  
+    - Convert the variables `confirmed` and  `discharged` into variables of type "date".  
+    - Extract the numeric value from the variable `recovery`.  
+    - Re-derive the variable `recovery` as the number of days between `confirmed` and `discharged` and save as `recovery_days`.  
+    - Convert the variable `category` from type `character` to type `factor`.  
+    - Save this data as `recovered` and use this data for the remaining questions in part I.  
+
+```{r}
+recovered <- recovery_data %>% 
+  mutate(confirmed = mdy(confirmed),
+         discharged = ymd(discharged),
+         recovery = parse_number(recovery),
+         category = factor(category),
+         recovery_days = discharged - confirmed)
+```
+
+
+(ii) Look at a summary of the variables:
+
+```{r}
+recovered %>% summary()
+```
+
+
+(iii) What was the longest amount of time someone represented in this data took to recover from COVID-19? Which observation was this? Use indexing to print this row of the data frame.  
+
+```{r}
+max(recovered$recovery)
+which.max(recovered$recovery)
+recovered[which.max(recovered$recovery), ]
+```
+
+The longest amount of time someone represented in this data took to recover from COVID-19 was `r max(recovered$recovery)` days. This observation is found in row `r which.max(recovered$recovery)`.
+
+
+(iv) When was the first confirmed case in this data? Which observation is this? Use indexing to print this row of the data frame.
+
+```{r}
+min(recovered$confirmed)
+which.min(recovered$confirmed)
+recovered[which.min(recovered$confirmed), ]
+```
+
+The first confirmed case in this data was on `r min(recovered$confirmed)`. This observation is found in row `r which.min(recovered$confirmed)`.
+
+
+#### Question #4: Time to recovery (16 pts)
+
+If indeed infected, how long would it take for you to be free of the novel coronavirus?  
+
+(i) Use `ggplot2` to look at the distribution of the variable `recovery` (you may need to adjust the size of the bins).
+
+```{r fig.width=6, fig.height=3}
+ggplot(recovered) + geom_histogram(aes(recovery_days), binwidth = 2)
+```
+
+Most of the cases in this data recovered within 20 days of their confirmed test. A few of the cases in this data took close to 30 days to recover.  
+
+
+(ii) Is there a difference in the time it took to recover for different ages?   
+      - Create a new variable `age_blks` from `age` that introduces age categories that groups the ages of the patients into intervals: < 10, 10-20, 20-30, 30-40, 40-50, 50-60, 60-70, 70-80, and >80. (see ?cut).  
+      - Create side-by-side boxplots of the number of days to recovery for the different age groups.   
+      - Flip the coordinates and map the variable `age_blks` to the fill aesthetic.
+
+```{r}
+recovered_ages <- recovered %>% 
+  mutate(age_blks = cut(age, c(0, 10, 20, 30, 40, 50, 60, 70, 80, 100), 
+                     labels = c("< 10", "[10-20)", "[20-30)", "[30-40)", "[40-50)", "[50-60)", "[60-70)", "[70-80)", ">= 80"), right = FALSE)) 
+
+recovered_ages %>%
+  ggplot() + 
+  geom_boxplot(aes(x = age_blks, y = recovery, fill = age_blks), show.legend = FALSE) +
+  coord_flip()
+```
+
+While it is difficult to say much with any certainty given the small data set, there does not appear to be a large difference between the groups. The age group with the largest variability in the number of days it took to recover was the [50-60) age group. The 60-70 and < 10 age groups had the lowest median recovery time of around 5 days. The remaining groups had a median recovery time of around 11-13 days.  
+
+
+(iii) Is there a difference between the genders in the time it took to recover for any of the groups?  
+      - Use the age blocks created in the last question.  
+      - Create side-by-side boxplots for males and females (1's and 0's, respectively) for each of the age groups. 
+      - Fill your boxplots by mapping the variable `gender` to the aesthetic `fill`.
+
+```{r}
+recovered_ages %>% 
+  mutate(gender = factor(gender)) %>% 
+  ggplot() +  
+  geom_boxplot(aes(x = gender, y = recovery, fill = gender), show.legend = FALSE) +
+  facet_grid(~age_blks)
+```
+
+The only age groups with much of a difference between genders are the <10 and 60-70 age groups. However, this difference is more likely due to a very small sample size rather than there being a true difference.  
+
+<br/>
+
+### Part II: Global Data
+
+#### Question #1: First Overview (14 pts)
+
+(i) Read the data from [https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/exams/data/covid19-global.csv](https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/exams/data/covid19-global.csv) without downloading the file locally. Each line of the file contains daily counts for Province/State-County/Region pair.
+
+```{r}
+cases <- readr::read_csv("https://raw.githubusercontent.com/Stat480-at-ISU/Stat480-at-ISU.github.io/master/exams/data/covid19-global.csv")
+```
+
+
+(ii) How many rows and columns does the data have? 
+
+```{r}
+dim(cases)
+```
+
+This data contains 263 observations and 81 variables.
+
+
+(iii) What are the variables called?
+
+```{r}
+#names(cases)
+```
+
+The variables are named `Province/State`, `Country/Region`, `Lat`, `Long`, and the dates `1/22/20` through `4/7/20`
+
+
+(iv) Rename the variables `Province/State`, `Country/Region`, `Lat`, and `Long` to be `province`, `country`, `lat`, and `long`, respectively.
+
+```{r}
+names(cases)[1:4] <- c("province", "country", "lat", "long")
+```
+
+
+(v) Each row contains data for one province-country pair. How many countries are represented in this data set? 
+
+```{r}
+length(unique(cases$country))
+```
+
+There are `r length(unique(cases$country))` countries represented in this data.
+
+
+(vi) For each country represented, how many provinces are recorded? Print a table for the five countries with the largest number of provinces recorded.
+
+```{r}
+cases %>% 
+  group_by(country) %>% 
+  tally() %>% 
+  arrange(desc(n)) %>% 
+  slice(1:5)
+```
+
+China has the largest number of provinces recorded in this data with 33 provinces.
+
+
+(vii) How many countries do not have any provinces recorded in this data?
+
+```{r}
+cases %>% 
+  count(country) %>% 
+  filter(n == 1) %>% 
+  tally()
+```
+
+In this instance we want to include the `NA`'s. If you look at the countries that contain provinces and an `NA` (there are 4 of them), the `NA` is referring to the mainland. Thus, in this data, there are 177 countries that do not have a province recorded here. In addition, if remove Diamond Princess and MS Zaandam cruise, there are actually 175 countries.
+
+
+#### Question #2: Data wrangling (17 pts)
+
+In order to continue with an analysis of this data, we should reshape it.
+
+(i) Use functions from the `tidyverse` package to modify the shape and form of the data:  
+    - Use a function from `dplyr` to remove the `lat` and `long` variables from the `cases` data.   
+    - Then use a function from the `tidyr` package to move from wide format into long format where each row represents the number of confirmed cases on a particular date for each country-province pair.  
+    - Lastly, use a function from `lubridate` to convert the variable `date` from a string into an object of type `date`.  
+    - Save the resulting data frame as `cases_long`.  
+
+```{r}
+cases_long <- cases %>% 
+  select(-lat, -long) %>% 
+  pivot_longer(cols = -c(province, country),
+               names_to = "date", 
+               values_to = "confirmed") %>% 
+  mutate(date = lubridate::mdy(date)) 
+```
+
+
+(ii) Identify the nine countries with the largest number of confirmed cases and save these in a data frame named `cases_by_country`. Plan of attack:  
+      - Begin with the data frame `cases_long`.  
+      - Calculate the number of confirmed cases for each country on each date.  
+      - Find the rank of the countries by current number of confirmed cases for each country.  
+      - Filter the top nine countries.  
+      - Save this data frame as `cases_by_country`.  
+
+```{r}
+cases_by_country <- cases_long %>% 
+  group_by(date, country) %>% 
+  summarise(confirmed = sum(confirmed)) %>% 
+  group_by(country) %>% 
+  mutate(total = max(confirmed)) %>% 
+  ungroup() %>% 
+  mutate(rank = dense_rank(desc(total))) %>% 
+  filter(rank < 10)
+
+cases_by_country %>% arrange(desc(date), desc(total)) %>% slice(1:9) %>% select(rank, country, total)
+```
+
+The nine countries with the greatest number of total cases: `r cases_by_country %>%  arrange(desc(total)) %>% distinct(country) %>% pull()`.
+
+
+#### Question #3: Growth over time (15 pts)
+
+(i) Let's look at how the number confirmed cases for these nine countries grew over time.  
+    - Start with the data frame `cases_by_country.`  
+    - Use `ggplot2` to plot the number of confirmed cases for each of the nine countries over time.  
+    - Map the variable `country` to color and use the function `fct_reorder2()` from the `forcats` package to align the colors of the lines with the colors in the legend. 
+    - Optional: to make the y-axis labels more readable, add the layer `+ scale_y_continuous(labels = scales::comma)`.  
+
+```{r}
+ggplot(cases_by_country) +
+  geom_line(aes(x = date, y = confirmed, color = forcats::fct_reorder2(country, date, confirmed))) + 
+  scale_y_continuous(labels = scales::comma) 
+```
+
+Most countries have seen a considerable increase in the number of cases since mid-March - the exception to this case is China whose number of cases leveled off mid-February. The US has by far the largest number of cases and has yet to begin to level off like most of the other countries have. 
+
+
+(ii) Let's next look at the difference the last week of March made (Mar 24 vs. Mar 31).  
+      - Use `ggplot2` to create a barchart of the number of cases for the top nine countries for the two dates, sorted according to the total number of cases in that country.
+      - Make sure the labels of the bars are readable and fill by country.
+
+```{r fig.height = 6}
+cases_by_country %>% 
+  filter(date == "2020-03-31" | date == "2020-03-24") %>% 
+  mutate(country = forcats::fct_reorder(country, confirmed, .fun = max)) %>% 
+  ggplot() +
+  geom_bar(aes(x = country, weight = confirmed, fill = country), show.legend = FALSE) +
+  facet_grid(date~.) +
+  coord_flip() +
+  labs(x="", y="")
+```
+
+The number of cases in the US increased dramatically over the last week in March. Other countries that saw a substantial increase include Spain, Germany, Italy, and France. 
+
+
+#### Question #4: Some summaries (16 pts + 3 extra credit pts)
+
+(i) How many days did it take for each of the nine countries to go from their 500th case to their 20,000th case?
+
+```{r}
+cases_by_country %>% 
+  filter(confirmed >= 500) %>% 
+  group_by(country) %>% 
+  arrange(date) %>% 
+  summarise(min_value = confirmed[which.min(confirmed)],
+            max_value = first(confirmed[confirmed>=20000]),
+            date_first=date[which.min(confirmed)], 
+            date20k=date[first(which(confirmed>=20000))], 
+            days_to_20k = date20k - date_first) %>%
+  select(country, days_to_20k) %>% 
+  arrange(days_to_20k)
+```
+
+Spain, China, Turkey, and the US went from 500 to 20,000 cases in the shortest amount of time -- 13 days. Germany took 15 days, Italy 16 days, France and the UK 17 days, and Iran 21 days.
+
+
+(ii) Let's take another look at how the number of cases has grown. This time, though, let's look at the growth for each country starting at their 100th case.  
+      - For each country, calculate the first date that the country had 100 or more cases.  
+      - Introduce a new variable that transforms the date variable into the number of days since the 100th case.  
+      - Save this data frame as `cases100`.  
+      - Create a subset of the `cases100` that contains only the last date and save as `cases100_last`.
+      - Extra credit: Using `cases100` and `cases100_last`, recreate the visualization below.  
+      
+![](https://github.com/Stat480-at-ISU/Stat480-at-ISU.github.io/blob/master/exams/images/covid-growth.png?raw=true)
+
+Create the 2 data frames:  
+
+```{r}
+cases100 <- cases_by_country %>% 
+  filter(confirmed >= 100) %>%
+  group_by(country) %>% 
+  arrange(date) %>% 
+  mutate(date100 = date[which.min(confirmed)], 
+          days_from_100 = (date100 %--% date)/ddays(1)) 
+
+cases100_last <- filter(cases100, date == max(cases100$date))
+```
+
+
+Re-create the visualization:  
+
+```{r}
+cases100 %>% 
+  ggplot(aes(x = days_from_100, y = confirmed, color = forcats::fct_reorder2(country, date, confirmed))) +
+  geom_line() + 
+  geom_text(data = cases100_last, aes(label = country, x = days_from_100 + 0.5), hjust = "left", size = 3) + 
+  geom_point(data = cases100_last) +
+  scale_y_log10() + 
+  guides(color = FALSE)
+```
+
+This visualization appears to show that (assuming no issues in testing and reporting) growth rate has, fortunately, slowed for all nine countries included here. 
+

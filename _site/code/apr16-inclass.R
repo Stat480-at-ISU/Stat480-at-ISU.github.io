@@ -1,4 +1,4 @@
-# class 4/2/20
+# class 4/16/20
 
 # slides: maps ---------------------
 library(tidyverse)
