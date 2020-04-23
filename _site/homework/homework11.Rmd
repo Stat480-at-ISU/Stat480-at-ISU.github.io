@@ -1,0 +1,118 @@
+---
+title: 'Stat 480 - Homework #11 (extra credit)'
+author: "Your Name"
+date: "4/23/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+<br/>
+
+#### Submission Details
+
+**Due date**: This homework is for 15 points of extra credit to be added to the midterm exam points and is due before class on Thursday.  
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+
+#### Measles Vaccination Rates
+
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.  
+
+
+2. This week we will return to the measles data from homework 7.   
+
+```{r }
+library(tidyverse)
+measles <- read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-02-25/measles.csv')
+```
+
+3. Data clean up:  
+- Remove duplicates by keeping the distinct combinations of the variables `state`, `name`, `county`, `overall`, `mmr`, `lat`, `lng`, and `enroll.`  
+- Filter out schools outside the continent (use `lng` < 0).  
+- Use filtering to keep observations where `mmr` >= 0 or `overall` >= 0.  
+- Using the function `ifelse()`, create a new variable `rate` where the value is equal to the value of `mmr` when `mmr >= 0` is true and equal to `overall` when `mmr >= 0` is false.  
+- Save this data as `measles_new`  
+
+```{r}
+## your answer here
+```
+
+
+4. Load the county map data using the function `map_data()` and save as `us_counties`.
+
+```{r}
+## your answer here
+```
+
+
+5. Additional data cleaning and data joining:
+  - Begin with the `measle_one` data created in question 3.
+  - Use the function `str_to_lower()` from the `stringr` package, to create a variable `subregion` that is the lowercase version of `county`.  
+  - Use the function `str_to_lower()` from the `stringr` package, to create a variable `region` that is the lowercase version of `state`.  
+  - For each `region` - `subregion` pair, use `summarise()` to calculate the mean of the variable `rate`.  
+  - Create a new variable `threshold` that is `TRUE` when `rate` > 0 and `FALSE` otherwise.  
+  - Use `full_join()` to join in the `us_counties` data by `region` and `subregion`.  
+  - Save this data as `measles_two`.  
+
+```{r}
+## your answer here
+```
+
+6. Draw a map of the us counties and map the variable `threshold` to fill. Set the outline of the counties to the color "#f4f4f8" and a size of 0.1. Apply the palette "Dark2" from RColorBrewer, name the scale "Rate > 95%", and set an `na.value` of "grey80". Apply the theme `theme_minimal()`.
+
+
+```{r}
+## your answer here
+```
+
+7. Use `geom_polygon()`to draw a map of the counties (don't use the `measles_one` data yet). Apply the following parameters (outside of `aes()`): `fill = "#f5f5f2"`, `color = "black"`, and `size = 0.1`. Save this plot as `plot1` and print.
+
+```{r}
+## your answer here
+```
+
+
+8. Now we want to add on the `measles_one` data. Start with `plot1` and add an additional layer of points using the `measles_one` data created in question 3 with the points colored according the variable `rate`. Add an `alpha` of 0.5 and `size` of 0.5. Save this plot as `plot2` and print.
+
+```{r}
+## your answer here
+```
+
+9. Now we will add some labels. Start with `plot2` and add the title `"Schools' Vaccination Rate in 31 U.S. States"` and the caption `"Overall vaccination rate shown in \nFL, ID, IA, MI, NJ, NC, OK, RI, TN, WI. Elsewhere, the \nMeasles, Mumps, and Rubella (MMR) vaccination rate is shown."`. Save this plot as `plot3` and print.
+
+
+```{r}
+## your answer here
+```
+
+10. Now we will modify the color scale. Add the color scale `scale_color_viridis_c()` with palette "plasma". Name the scale "Vaccination rate", reverse the direction (`direction = -1`), and add the argument `guide = guide_legend(direction = "horizontal", title.position = "top", title.hjust = 0.5)`. Save this plot as `plot4` and print.
+
+```{r}
+## your answer here
+```
+
+
+11. The final step is to customize the theme. Let's first start with a blank slate by applying `theme_void()` to `plot4`. Next, add the following theme components with the function `theme()` and print your final map.  
+- Move the legend to the bottom.  
+- Move the plot title to the center by adding an `hjust` and `vjust` of 0.5.  
+- Move the plot caption to the center by adding an `hjust` of 0.5.  
+- Apply a plot background with a `fill = "#f5f5f2"` and `color = NA`.
+- Add the argument `plot.margin = margin(t = 1, r = 1, b = 1, l = 1, unit = "cm")`.  
+- Add the argument `legend.margin = margin(t = 2, r = 2, b = 5, l = 2, unit = "mm")`.  
+
+```{r}
+## your answer here
+```
+
+
+
+
