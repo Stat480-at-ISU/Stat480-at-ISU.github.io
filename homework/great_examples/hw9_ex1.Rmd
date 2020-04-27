@@ -1,0 +1,144 @@
+---
+title: 'Stat 480 - Homework #9'
+date: "3/31/2020"
+output: html_document
+---
+---
+title: 'Stat 480 - Homework #9'
+date: "3/31/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+
+
+<br/>
+
+#### Submission Details
+
+**Due date**: the homework is due before class on Thursday. 
+
+**Submission process**: submit both the R Markdown file and the corresponding html file on canvas. Please submit both the `.Rmd` and the `.html` files separately and do not zip the two files together.
+
+<br/>
+
+#### Weekly box office data
+
+1. Download the RMarkdown file with these homework instructions to use as a template for your work. Make sure to replace "Your Name" in the YAML with your name.
+
+2. For this homework we use the data set `box` from the `classdata` package, which consists of weekly box office gross for movies of the last five year.
+
+```{r, message=FALSE, warning=FALSE}
+# devtools::install_github("haleyjeppson/classdata")
+library(classdata)
+library(tidyverse)
+head(box)
+```
+
+3. In class we discussed two instances where a movie was released under the same name as a different movie previously. Identify at least one more instance of a movie where that happened. Report the name of the movie, search online for additional information. Describe the strategy you used to identify this movie, report the code involved.  
+
+```{r}
+movies <- box %>% 
+  group_by(Movie, Distributor) %>% 
+  summarise(
+    firstDate = Date[which.min(Week)], 
+    firstWeek = min(Week, na.rm=TRUE))
+
+movies %>% 
+  group_by(Movie) %>% 
+  mutate(n = n()) %>% 
+  filter(n>1) %>% 
+  arrange(desc(n))
+```
+
+```{r}
+box %>% dplyr::filter(Movie=="Concussion")
+```
+
+Two different movies, both titled ‘Concussion’ have been released. One was released in 2013, and the other in 2015. Below are the IMBd links to each respective movie:
+
+2013 version: https://www.imdb.com/title/tt2296697/
+
+2015 version: https://www.imdb.com/title/tt3322364/
+
+The strategy I used to find this movie was the same one we went over in class. First, in line 44 I created a dataset called ‘movies’ that filters the ‘box’ data for distinct combinations of Movie and Distributor. In line 45, I count how many times every movie title appears in the ‘movies’ data set. Thus, movies with the same title but different distributors are counted under the same movie name. So, for the movie “Concussion”, its count was 2. This count of 2 reflects that the movie was released under two different distributors (different movie, same name). The 2013 version’s distributor is Radius, while the 2015 version’s distributor is Sony Pictures. To get the specifics on these movies, I filtered the original ‘box’ data set to look at only where the title ‘Concussion’ shows up. I did this in line 46.
+
+
+4. Re-derive variables: `Change` (percent change in gross income from last week), `Rank.Last.Week`, `Per.Thtr.` (as gross per theater), and `Total.Gross` (as the cumulative sum of weekly gross).
+
+```{r}
+new_box <- box %>% 
+  group_by(Movie, Distributor)  %>%  
+  arrange(Movie, Week) %>% 
+  mutate(per_theater = round(Gross/Thtrs., 0),
+           total_gross = cumsum(Gross),
+         rank_last_week = lag(Rank, order_by = Week),
+         week_test = lag(Week, order_by = Week),
+         rank_last_week = ifelse(week_test == Week - 1, rank_last_week, NA),
+         change = round((Gross/lag(Gross, order_by = Week) - 1)*100,0),
+         change = ifelse(week_test == Week - 1, change, NA)) %>%
+  select(-week_test)
+```
+
+
+5. For the variables `Per.Thtr.` and `Change` compare the original variables and the newly derived ones. Are there differences? Where? Try to describe patterns you find.
+
+```{r}
+new_box %>% 
+  group_by(Movie, Distributor)  %>%  
+  mutate(per_theater_diffs = Per.Thtr. - per_theater) %>% 
+  summarise(max_diff = max(per_theater_diffs, na.rm = TRUE)) %>% 
+  arrange(desc(max_diff))
+```
+
+The only differences in the original and newly derived `Per.Thtr.` variables look to be rounding errors.
+
+```{r}
+new_box %>% 
+  group_by(Movie, Distributor)  %>%  
+  mutate(change_diffs = Change - change) %>% 
+  summarise(max_diff = max(change_diffs, na.rm = TRUE)) %>% 
+  arrange(desc(max_diff))
+
+new_box %>% 
+  filter(Movie == "Tracks") %>% 
+  arrange(Week) %>% 
+  select(Date, Week, Rank, Rank.Last.Week, rank_last_week, Gross, Change, change, Per.Thtr., per_theater, Total.Gross, total_gross)
+```
+
+There are some issues in how the variable`Week` is derived. It looks like for some movies, if the movie falls off the charts and returns to the charts again, the `Week` count starts back at 1 which would be incorrect.
+
+6. Is the original variable `Total.Gross` strictly increasing? 
+
+```{r}
+ggplot(new_box, aes(x = Week, group = interaction(Movie, Distributor))) + 
+  geom_line(aes(y = Gross), alpha= .4, color = "grey20") + xlim(0, 50)
+
+ggplot(new_box, aes(x = Date, group = interaction(Movie, Distributor))) + 
+  geom_line(aes(y = Total.Gross), alpha= .4, color = "grey20")
+```
+
+No, there look to be some issues with the data as it should be strictly increasing.
+
+7. Identify the three top grossing movies for each year. 
+Plan of attack: 
+    - Extract the year from the `Date` variable.
+    - Summarize the total gross for each movie and each year.
+    - Find the rank of movies by total gross in each year.
+    - Filter the top three movies.
+
+
+```{r}
+new_box %>% 
+  separate(Date, into = c("year", "month", "date"), remove = FALSE) %>% 
+  group_by(year, Movie) %>% 
+  summarise(Total.Gross.Max = max(Total.Gross)) %>% 
+  arrange(desc(year), desc(Total.Gross.Max)) %>% 
+  group_by(year) %>% 
+  mutate(rank = min_rank(desc(Total.Gross.Max))) %>% 
+  arrange(desc(year), rank) %>% 
+  filter(rank < 4)
+```
